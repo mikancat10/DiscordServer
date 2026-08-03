@@ -571,32 +571,8 @@
                 <h2>王国ニュース</h2>
                 <p>ベネルクス連合王国の最新情報や過去の動向を確認できます。見たいニュースを選択してください。</p>
 
-                <!-- 横3列のボックス配置 -->
-                <div class="news-grid">
-                    <div class="news-card" onclick="openNews(1)">
-                        <div>
-                            <div class="news-date">2026/03/07</div>
-                            <div class="news-title">国土面積拡大！世界9位に</div>
-                        </div>
-                        <span class="news-badge">領土</span>
-                    </div>
-
-                    <div class="news-card" onclick="openNews(2)">
-                        <div>
-                            <div class="news-date">2026/03/07</div>
-                            <div class="news-title">住民数が6人を突破</div>
-                        </div>
-                        <span class="news-badge">人口</span>
-                    </div>
-
-                    <div class="news-card" onclick="openNews(3)">
-                        <div>
-                            <div class="news-date">2026/02/20</div>
-                            <div class="news-title">ベネルクス連合王国が正式発足</div>
-                        </div>
-                        <span class="news-badge">建国</span>
-                    </div>
-                </div>
+                <!-- 自動生成用ニュースグリッド -->
+                <div id="news-grid" class="news-grid"></div>
 
                 <!-- 選択したニュースの詳細表示枠 -->
                 <div id="news-detail" class="news-detail-container">
@@ -629,29 +605,59 @@
     </main>
 
     <script>
-        // ニュースデータ
-        const newsData = {
-            1: {
+        // ニュースデータ一覧（新しいニュースを追加する場合はここに追加するだけでOK）
+        const newsList = [
+            {
+                id: 1,
                 date: "2026/02/20",
-                title: "ベネルクス連合王国、正式に誕生！",
+                badge: "建国",
+                title: "ベネルクス連合王国が正式発足",
                 content: "欧州およびアジアの拠点が統一され、「ベネルクス連合王国」が正式に発足しました。強固な守りと規律を兼ね備えた軍事国家を目指し、建国の第一歩を踏み出しました。"
             },
-            2: {
+            {
+                id: 2,
                 date: "2026/03/07",
-                title: "住民が6人を突破！",
+                badge: "人口",
+                title: "住民数が6人を突破",
                 content: "新規国民の加入により、ベネルクス連合王国の総人口が6人を突破しました。集落の発展と防衛体制の維持に向け、さらなるコミュニティの活発化が期待されています。"
             },
-            3: {
+            {
+                id: 3,
                 date: "2026/03/07",
-                title: "国土面積が拡大！世界面積ランキング9位にランクイン！",
+                badge: "領土",
+                title: "国土面積拡大！世界9位に",
                 content: "領土拡張プロジェクトの実施に伴い、ベネルクス連合王国の総面積が大幅に拡大しました。これにより世界面積ランキング第9位に浮上し、さらなる拠点開発が進められています。"
             },
-            4: {
+            {
+                id: 4,
                 date: "2026/08/03",
+                badge: "人事",
                 title: "国王失踪、国王交代",
                 content: "ベネルクス連合王国元国王のMikancat10が、突然国から姿を消してしまいました。消える直前に「あとは頼んだ」という感じなことを言い残して消えたため、この度、権力を引き継ぎ務めさせていただくことになりました！oooian53577です。よろしくお願いします！"
             }
-        };
+        ];
+
+        // ニュースカードの動的生成
+        function renderNewsGrid() {
+            const grid = document.getElementById('news-grid');
+            grid.innerHTML = ''; // 初期化
+
+            // 新しい日付順（配列の最後を上）に並べ替えて表示したい場合は reverse() 等を挟めます
+            newsList.forEach(news => {
+                const card = document.createElement('div');
+                card.className = 'news-card';
+                card.onclick = () => openNews(news.id);
+
+                card.innerHTML = `
+                    <div>
+                        <div class="news-date">${news.date}</div>
+                        <div class="news-title">${news.title}</div>
+                    </div>
+                    <span class="news-badge">${news.badge || 'お知らせ'}</span>
+                `;
+                grid.appendChild(card);
+            });
+        }
 
         // ページ切り替え関数
         function showPage(pageId, element) {
@@ -674,7 +680,7 @@
 
         // ニュース詳細表示関数
         function openNews(id) {
-            const data = newsData[id];
+            const data = newsList.find(n => n.id === id);
             if (data) {
                 document.getElementById('news-detail-date').innerText = data.date;
                 document.getElementById('news-detail-title').innerText = data.title;
@@ -708,8 +714,10 @@
             localStorage.setItem('theme', theme);
         }
 
+        // 初期化処理
         const savedTheme = localStorage.getItem('theme') || 'main';
         setTheme(savedTheme);
+        renderNewsGrid(); // ニュースカード一覧を描画
     </script>
 </body>
 </html>
